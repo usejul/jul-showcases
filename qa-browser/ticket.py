@@ -56,7 +56,7 @@ def _item(line: str) -> Step:
 
 def _fragment_steps(fragments_dir, name: str) -> list[Step]:
     """The numbered steps of a shared setup fragment (fragments/<name>.md). Reused verbatim by
-    every ticket that names it, so common arrange-steps ("get a flyer into the cart") live once
+    every ticket that names it, so common arrange-steps ("get a book into the cart") live once
     and each ticket still runs them itself — DRY, and the tickets stay independent."""
     from pathlib import Path
     path = Path(fragments_dir or ".") / f"{name}.md"

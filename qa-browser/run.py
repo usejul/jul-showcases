@@ -1,9 +1,9 @@
 """qa-browser — run a PO's acceptance test in a real browser, with JuL as the only brain.
 
-    python qa-browser/run.py qa-browser/tickets/truffaut-arrosoir.md
-    python qa-browser/run.py qa-browser/tickets/truffaut-arrosoir.md --replay   # reuse the last trace
+    python qa-browser/run.py qa-browser/tickets/barnesandnoble-cart-en.md
+    python qa-browser/run.py qa-browser/tickets/barnesandnoble-cart-en.md --replay   # reuse the last trace
 
-The PO writes the ticket in plain French (see README.md). For each step the harness reads the
+The PO writes the ticket in plain English or French (see README.md). For each step the harness reads the
 page's accessibility tree and JuL decides, in one `system_one` call, the operation (click or
 type) and the target element. Optional steps ("Si ...") get a `Noul`: does this element really
 do the step here? Each acceptance criterion is a `Noul` on what the final page shows.
@@ -204,8 +204,8 @@ class Page:
         lines = [l.strip() for l in p.inner_text("body").splitlines() if l.strip()]
         keys = set().union(*(words(q) for q in criterion.quoted)) if criterion.quoted else words(criterion.text)
         hits = [i for i, l in enumerate(lines) if keys & words(l)]
-        # A wide window around each hit: the criterion word alone ("Flyers") is ambiguous; the lines
-        # around it ("Quantity 500 ... Item total 19,99 €") are what let JuL tell a listed cart item
+        # A wide window around each hit: the criterion word alone ("Theo") is ambiguous; the lines
+        # around it ("Paperback ... Qty 1 ... $20.00") are what let JuL tell a listed cart item
         # from the same word in a menu or a heading.
         keep = sorted({j for i in hits for j in range(max(0, i - 4), min(len(lines), i + 5))})
         excerpt = " | ".join(lines[j] for j in keep)[:1400] or " | ".join(lines[:20])[:800]

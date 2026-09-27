@@ -4,33 +4,27 @@ Your Product Manager writes a test the way they'd describe it to a teammate — 
 ticket. JuL reads it, runs it in a real browser, and tells you whether it passed. That's the whole
 idea.
 
-Here's a real one — personalize a flyer on vistaprint.com and get it into the cart:
+Here's a real one — find a book on barnesandnoble.com and get it into the cart:
 
 ```markdown
-# Ticket QA-VP-02 — Personalize a flyer and add it to the cart
+# Ticket QA-BN-01 — Add a book to the cart from search
 
-Site : https://www.vistaprint.com/marketing-materials/flyers
+Site : https://www.barnesandnoble.com/
+Tags : smoke, cart
 
 ## Steps
 
-1. If a country banner appears, click "Close".
-2. Click "Browse our templates".
-3. Check that the "Flyers Templates" page is displayed.
-4. Open one of the "Flyers templates".
-5. Click "Edit my design".
-6. Click "Next".
-7. Click "Continue without Back".
-8. Check the box "I have reviewed and approve my design".
-9. Click "Continue".
-10. Check that the "Final Steps" page is displayed.
-11. Click "Add to cart".
-12. Click "Continue".
-13. Click "Continue to cart".
+1. If a cookie banner appears, click "Accept All Cookies".
+2. Search for "Theo of Golden".
+3. Open the book "Theo of Golden: A Novel".
+4. Check that the "Theo of Golden" book page is displayed.
+5. Click "Add To Cart".
+6. Click "View Cart & Checkout".
 
 ## Acceptance criteria
 
-- The "My Cart" page is displayed.
-- The cart contains a "Flyers" item with quantity 500.
+- The "Shopping Cart" page is displayed.
+- The cart contains "Theo of Golden" with quantity 1.
 - The "Checkout" button is visible.
 ```
 
@@ -38,57 +32,42 @@ No selectors, no code — just what a person would click and what they'd expect 
 running it:
 
 ```console
-$ python qa-browser/run.py qa-browser/tickets/vistaprint-cart-en.md --headed
+$ python qa-browser/run.py qa-browser/tickets/barnesandnoble-cart-en.md --headed
 
-→  1. If a country banner appears, click "Close"
-     CLICK button « Close »   [jul 0.89]
-→  2. Click "Browse our templates"
-     CLICK button « Browse our templates »   [jul 1.00]
-✓  3. Check that the "Flyers Templates" page is displayed   (JuL 1.00)
-→  4. Open one of the "Flyers templates"
-     CLICK link « Flyers templates in olive and olive for business services »   [jul 0.49]
-→  5. Click "Edit my design"
-     CLICK link « Edit my design »   [jul 1.00]
-→  6. Click "Next"
-     CLICK button « Next »   [jul 1.00]
-→  7. Click "Continue without Back"
-     CLICK button « Continue without Back »   [jul 1.00]
-→  8. Check the box "I have reviewed and approve my design"
-     CLICK checkbox « I have reviewed and approve my design. »   [jul 1.00]
-→  9. Click "Continue"
-     CLICK button « Continue »   [jul 1.00]
-✓ 10. Check that the "Final Steps" page is displayed   (JuL 0.99)
-→ 11. Click "Add to cart"
-     CLICK button « Add to cart »   [jul 1.00]
-→ 12. Click "Continue"
-     CLICK link « Continue »   [jul 1.00]
-→ 13. Click "Continue to cart"
-     CLICK link « Continue to cart »   [jul 1.00]
+→  1. If a cookie banner appears, click "Accept All Cookies"
+     CLICK button « Accept All Cookies »   [jul 0.99]
+→  2. Search for "Theo of Golden"
+     TYPE  search field « Search query »  ⌨ "Theo of Golden"   [jul 1.00]
+→  3. Open the book "Theo of Golden: A Novel"
+     CLICK link « Theo of Golden: A Novel »   [jul 0.78]
+✓  4. Check that the "Theo of Golden" book page is displayed   (JuL 1.00)
+→  5. Click "Add To Cart"
+     CLICK button « Add To Cart »   [jul 0.99]
+→  6. Click "View Cart & Checkout"
+     CLICK link « View Cart & Checkout »   [jul 1.00]
 
-Page reached: Cart | VistaPrint  (https://www.vistaprint.com/c/)
+Page reached: Cart | Barnes & Noble®  (https://www.barnesandnoble.com/cart)
 
 Acceptance criteria
-  ✓ The "My Cart" page is displayed   (JuL 1.00)
-  ✓ The cart contains a "Flyers" item with quantity 500   (JuL 0.58)
+  ✓ The "Shopping Cart" page is displayed   (JuL 1.00)
+  ✓ The cart contains "Theo of Golden" with quantity 1   (JuL 0.99)
   ✓ The "Checkout" button is visible   (JuL 1.00)
 
-PASS — 13 steps, 3 criteria, 78 s
-JuL: 11 decisions, median 2206 ms, 0 tokens generated, $0.00
+PASS — 6 steps, 3 criteria, 32 s
+JuL: 9 decisions, median 1576 ms, 0 tokens generated, $0.00
 ```
 
 **JuL is the only brain here.** It picks every element and judges every check — and it never writes
 anything: the only text it ever types is what the Product Manager put in quotes. No API key, nothing
 generated, $0 a run. So you can run it on every deploy, and nothing in the code is tied to one site.
 
-Notice steps 3 and 10. Vistaprint makes you design the flyer before an "Add to cart" button even
-exists, so the test checks *as it goes* — did we reach the template gallery? the final-steps page? —
-and stops at the first check that fails. When a checkout funnel breaks, that tells you *where* it
-broke, not just *that* it broke.
+Notice step 4: the test checks *as it goes* — did we land on the right book? — and stops at the
+first check that fails. When a checkout funnel breaks, that tells you *where* it broke, not just
+*that* it broke.
 
-▶️ **[Watch the screencast (`demo.mp4`)](demo.mp4)** — this exact run on vistaprint.com, recorded
-with `python qa-browser/record_run.py`. On an Apple Silicon Mac (MLX, `wemm-4b-4bit`) the whole
-personalize-and-add-to-cart run takes about 80 seconds — roughly a third JuL thinking, the rest the
-site loading — and every rerun is free.
+▶️ **[Watch the screencast (`demo.mp4`)](demo.mp4)** — this exact run on barnesandnoble.com, recorded
+with `python qa-browser/record_run.py` on a 2021 MacBook M1 Pro (MLX, `wemm-4b-4bit`). The whole
+search-to-cart run takes 30 to 40 seconds, and every rerun is free.
 
 ## Writing a ticket
 
@@ -109,9 +88,12 @@ It works in French too — `## Étapes` and `## Critères de validation`. Each b
 criteria** is a yes/no question about the final page, and the ticket passes only when every step,
 every assertion and every criterion does.
 
-One tip: **make your checks specific.** `a "Flyers" item with quantity 500` is judged far more
-reliably than a bare `Flyers`, because the extra detail gives JuL something concrete on the page to
-agree with.
+One tip: **make your checks specific, and pick names nobody else uses.** `"Theo of Golden" with
+quantity 1` is judged far more reliably than a bare title, because the extra detail gives JuL
+something concrete to agree with. And a quoted product name that also appears inside other results
+("The Hobbit" vs. a 4-book boxed set *containing* The Hobbit) can let a wrong item through: the
+cart does contain "The Hobbit". Quote the exact title, and look at the screenshot (`--shot`) of
+your first green run.
 
 ## Under the hood
 
@@ -141,50 +123,36 @@ hand, in a browser JuL drives, and every run after that inherits the session:
 ```bash
 google-chrome --remote-debugging-port=9222 --user-data-dir="$HOME/.qa-agent"
 # sign in once in that window, then:
-python qa-browser/run.py qa-browser/tickets/vistaprint-checkout-auth-en.md --cdp http://localhost:9222
+python qa-browser/run.py my-signed-in-ticket.md --cdp http://localhost:9222
 ```
 
-That ticket takes a full cart into checkout and asserts it reaches the shipping and payment steps —
-which only happens when you're signed in; a guest hits a "create an account" wall instead. It stops
-there: nothing is ever paid.
-
-```console
-✓  1. Check that the "My Cart" page is displayed        (JuL 1.00)
-→  2. Click "Checkout"                                  [jul 1.00]
-✓  3. Check that the "Shipping" address step is shown   (JuL 1.00)
-
-Page reached: Checkout | VistaPrint  (https://www.vistaprint.com/co/)
-  ✓ The "Checkout" page is displayed        (JuL 1.00)
-  ✓ The "Shipping" address step is shown    (JuL 1.00)
-  ✓ The "Payment" step is shown             (JuL 0.94)
-
-PASS — 3 steps, 3 criteria, 23 s
-```
+Tag those tickets `auth` so a CI run without the session can skip them (`--exclude auth`).
 
 ## Suites, tags & shared setup
 
 Run the tests you need — filter by tag — get one aggregate report and a CI-ready exit code:
 
 ```console
-$ python qa-browser/suite.py qa-browser/tickets/*.md --tag auth --cdp http://localhost:9250
+$ python qa-browser/suite.py "qa-browser/tickets/*.md"
 
-━━━ [1/2] QA-VP-04 — The header shows a signed-in account  [account, auth] ━━━
-  … 1 step, 2 criteria, PASS, 6 s …
-━━━ [2/2] QA-VP-03 — Signed-in checkout reaches the payment step  [checkout, auth] ━━━
-  … 13 steps, 3 criteria, PASS, 90 s …
+  … QA-BN-01: 6 steps, 3 criteria, PASS …
+  … QA-BN-02: 7 steps, 2 criteria, PASS …
 ================================================================
-  ✓ QA-VP-04 — The header shows a signed-in account                (6 s)
-  ✓ QA-VP-03 — Signed-in checkout reaches the payment step         (90 s)
+  ✓ Ticket QA-BN-01 — Add a book to the cart from search   (39 s)
+  ✓ Ticket QA-BN-02 — A guest can start checkout from the cart   (30 s)
 
 2/2 green — 0 tokens generated, $0.00
 ```
+
+QA-BN-02 starts from a full cart, clicks "Checkout", and checks the guest lands on the checkout page
+with the book in the order summary. It stops there: nothing is ever paid.
 
 Two optional header lines make this work:
 
 - **`Tags : smoke, checkout, auth`** — pick what runs: `--tag smoke` for a fast gate on every
   commit, `--exclude auth` to skip the signed-in ones, full suite at night.
-- **`Setup : add-flyer-to-cart`** — pull in a shared step block from `fragments/`, so the "get a
-  flyer into the cart" preamble lives in one file. Each ticket runs it *itself*, so the tests stay
+- **`Setup : add-book-to-cart`** — pull in a shared step block from `fragments/`, so the "get a
+  book into the cart" preamble lives in one file. Each ticket runs it *itself*, so the tests stay
   **independent**: none inherits another's cart, and any ticket runs alone, in any order. That's the
   DRY way to share setup without the fragility of tests that hand state to each other.
 
@@ -221,7 +189,7 @@ Every run writes a trace (`qa-browser/runs/<ticket>.json`) with the element JuL 
 and its probability for each check. Replaying reuses those elements:
 
 ```console
-$ python qa-browser/run.py qa-browser/tickets/vistaprint-cart-en.md --replay
+$ python qa-browser/run.py qa-browser/tickets/barnesandnoble-cart-en.md --replay
 ```
 
 JuL is only called again for a step whose element has vanished (the site changed) and for the
@@ -232,7 +200,7 @@ assertions, which are always re-checked. Rerunning a green test costs nothing.
 ```bash
 pip install "jul[mlx]" playwright     # or jul[torch] off Apple Silicon
 playwright install chromium
-python qa-browser/run.py qa-browser/tickets/vistaprint-cart-en.md --headed
+python qa-browser/run.py qa-browser/tickets/barnesandnoble-cart-en.md --headed
 ```
 
 On a bot-protected site, point JuL at your own browser instead — it keeps your cookies and the
@@ -243,4 +211,4 @@ google-chrome --remote-debugging-port=9222 --user-data-dir="$HOME/.qa-agent"
 python qa-browser/run.py my-ticket.md --cdp http://localhost:9222
 ```
 
-The demo flow stops at the cart — nothing is ever ordered.
+The demo tickets stop at the checkout page — nothing is ever ordered.

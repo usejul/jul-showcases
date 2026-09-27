@@ -1,6 +1,6 @@
 """record_run — film real qa-browser runs, with JuL's decisions shown on the page.
 
-    python qa-browser/record_run.py qa-browser/tickets/truffaut-arrosoir.md qa-browser/tickets/wordery-hobbit.md
+    python qa-browser/record_run.py qa-browser/tickets/barnesandnoble-cart-en.md
     # -> qa-browser/demo.mp4 (one video, the tickets one after the other)
 
 It runs `run.py` unchanged for each ticket and only listens in: before each action it outlines
@@ -172,7 +172,7 @@ def check(self, criterion, evidence):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("tickets", nargs="*", default=[str(HERE / "tickets" / "vistaprint-cart-en.md")])
+    ap.add_argument("tickets", nargs="*", default=[str(HERE / "tickets" / "barnesandnoble-cart-en.md")])
     ap.add_argument("--out", default=str(HERE / "demo.mp4"))
     args, rest = ap.parse_known_args()
     if FRAMES.exists():
